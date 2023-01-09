@@ -1,108 +1,165 @@
-import de.bezier.guido.*;
-//Declare and initialize constants NUM_ROWS and NUM_COLS = 20
-private MSButton[][] buttons; //2d array of minesweeper buttons
-private ArrayList <MSButton> mines; //ArrayList of just the minesweeper buttons that are mined
+Button[][] testButtons;
+PImage bomb, flag;
+boolean hasLost, hasWon, allBombsAreFlagged, allNonBombsAreNotFlagged, firstClick;
 
-void setup ()
-{
-    size(400, 400);
-    textAlign(CENTER,CENTER);
-    
-    // make the manager
-    Interactive.make( this );
-    
-    //your code to initialize buttons goes here
-    
-    
-    
-    setMines();
+
+void setup(){
+  size(1000,1000);
+  background(255);
+  strokeWeight(1.5);
+  textAlign(CENTER);
+  textSize(40);
+  bomb = loadImage("bomb.png");
+  flag = loadImage("flag.png");
+  hasLost = false;
+  hasWon = false;
+  firstClick = true;
+  
+  testButtons = new Button[20][20];
+  for(int row = 0; row<20; row++){
+    for(int col = 0; col<20; col++){
+      if(Math.random()<0.25)
+        testButtons[row][col] = new Button(col*50+25, row*50+25, 50, true, row, col);
+      else
+        testButtons[row][col] = new Button(col*50+25, row*50+25, 50, false, row, col);
+    }
+  }
 }
-public void setMines()
-{
-    //your code
+void draw(){
+  background(255);
+  allBombsAreFlagged = true;
+  allNonBombsAreNotFlagged = true;
+  fill(255,0,0);
+  for(Button[] row:testButtons){
+    for(Button button:row){
+      button.show();
+      if(button.isBomb() && !button.isFlagged()){
+        allBombsAreFlagged = false;
+      }
+      if(button.isFlagged() && !button.isBomb())
+        allNonBombsAreNotFlagged = false;
+    }
+  }
+  if(allBombsAreFlagged && allNonBombsAreNotFlagged)
+    hasWon = true;
+  if(hasLost){
+    fill(255,0,0);
+    textSize(100);
+    text("YOU LOSE", 500, 500);
+    textSize(40);
+  }
+  if(hasWon){
+    fill(0,255,0);
+    textSize(100);
+    text("YOU WIN", 500, 500);
+    textSize(40);
+  }
+}
+void mousePressed(){
+  if(!hasLost || !hasWon){
+    for(Button[] row:testButtons){
+      for(Button button:row){
+        if(Math.abs(mouseX-button.getX())<25 && Math.abs(mouseY-button.getY())<25){
+          if(mouseButton == LEFT){
+            if(firstClick){
+              button.removeAdjacentBombs();
+              button.setNum(0); 
+              firstClick = false;
+              setNums();
+            }
+            button.onLClick();
+          }
+          if(mouseButton == RIGHT)
+            button.onRClick();
+        }
+      }
+    }
+  }
 }
 
-public void draw ()
-{
-    background( 0 );
-    if(isWon() == true)
-        displayWinningMessage();
-}
-public boolean isWon()
-{
-    //your code here
-    return false;
-}
-public void displayLosingMessage()
-{
-    //your code here
-}
-public void displayWinningMessage()
-{
-    //your code here
-}
-public boolean isValid(int r, int c)
-{
-    //your code here
-    return false;
-}
-public int countMines(int row, int col)
-{
-    int numMines = 0;
-    //your code here
-    return numMines;
-}
-public class MSButton
-{
-    private int myRow, myCol;
-    private float x,y, width, height;
-    private boolean clicked, flagged;
-    private String myLabel;
-    
-    public MSButton ( int row, int col )
-    {
-        // width = 400/NUM_COLS;
-        // height = 400/NUM_ROWS;
-        myRow = row;
-        myCol = col; 
-        x = myCol*width;
-        y = myRow*height;
-        myLabel = "";
-        flagged = clicked = false;
-        Interactive.add( this ); // register it with the manager
+public int adjacentBombs(int row, int col){
+  int count = 0;
+  for(int r = row-1; r<=row+1;r++){
+    for(int c = col-1; c<=col+1;c++){
+      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && testButtons[r][c].isBomb())
+        count++;
     }
+  }
+  return count;
+}
 
-    // called by manager
-    public void mousePressed () 
-    {
-        clicked = true;
-        //your code here
+public boolean allAdjacentBombsAreFlagged(int row, int col){
+  for(int r = row-1; r<=row+1;r++){
+    for(int c = col-1; c<=col+1;c++){
+      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && testButtons[r][c].isBomb() && !testButtons[r][c].isFlagged())
+        return false;
     }
-    public void draw () 
-    {    
-        if (flagged)
-            fill(0);
-        // else if( clicked && mines.contains(this) ) 
-        //     fill(255,0,0);
-        else if(clicked)
-            fill( 200 );
-        else 
-            fill( 100 );
+  }
+  return true;
+}
 
-        rect(x, y, width, height);
-        fill(0);
-        text(myLabel,x+width/2,y+height/2);
+public void removeBombs(int row, int col){
+  for(int r = row-1; r<=row+1;r++){
+    for(int c = col-1; c<=col+1;c++){
+      if(isValidOnNbyN(20, 20, r,c) && testButtons[r][c].isBomb())
+        testButtons[r][c].setIsBomb(false);
     }
-    public void setLabel(String newLabel)
-    {
-        myLabel = newLabel;
+  }
+}
+public void uncoverAdjacent(int row, int col){
+  for(int r = row-1; r<=row+1;r++){
+    for(int c = col-1; c<=col+1;c++){
+      if(isValidOnNbyN(20, 20, r,c) && !testButtons[r][c].isFlagged()){
+        if(testButtons[r][c].getNum() == 0)
+          uncover0s(r, c);
+        testButtons[r][c].uncover(); 
+      }
     }
-    public void setLabel(int newLabel)
-    {
-        myLabel = ""+ newLabel;
+  }
+}
+
+public boolean hasAdjacent0(int row, int col){
+  for(int r = row-1; r<=row+1;r++){
+    for(int c = col-1; c<=col+1;c++){
+      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && testButtons[r][c].getNum()==0)
+        return true;
     }
-    public boolean isFlagged()
-    {
-        return flagged;
+  }
+  return false;
+}
+
+public boolean isValidOnNbyN(int NUM_ROWS, int NUM_COLS, int row, int col){
+  return (!(row<0 || row>=NUM_ROWS || col<0 || col>=NUM_COLS));
+}
+
+public void uncover0s(int row, int col){
+  if(!isValidOnNbyN(20, 20, row, col))
+    return;
+  Button button = testButtons[row][col];
+  if(button.getNum()==0 && button.isCovered && !button.isBomb()){
+    button.uncover();
+    for(int r = row-1; r<=row+1;r++){
+      for(int c = col-1; c<=col+1;c++){
+        uncover0s(r, c);
+      }
     }
+  }
+  if(hasAdjacent0(row, col))
+    button.uncover();
+  return;
+}
+
+
+public void lost(){
+  hasLost = true;
+  for(Button[] row:testButtons)
+    for(Button button:row)
+      if(button.isBomb)
+        button.uncover();
+}
+
+public void setNums(){
+  for(int row = 0; row<20; row++)
+    for(int col = 0; col<20; col++)
+      testButtons[row][col].setNum(adjacentBombs(row, col));
 }

@@ -108,14 +108,14 @@ class Button{
   public int getNum(){
     return num;
   }
-  public int returns5() {
-    return 4;
-  }
   public int getRow(){
     return row;
   }
   public boolean returns4() {
     return isFlagged;
+  }
+  public boolean returns5() {
+    return isBomb;
   }
   public int getCol(){
     return col;

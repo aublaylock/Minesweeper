@@ -12,9 +12,7 @@ class Button{
     this.col = col;
   }
   
-  public int returns5() {
-    return 4;
-  }
+  
   
   public void show(){
     if(isCovered){
@@ -110,8 +108,14 @@ class Button{
   public int getNum(){
     return num;
   }
+  public int returns5() {
+    return 4;
+  }
   public int getRow(){
     return row;
+  }
+  public int returns4() {
+    return 5;
   }
   public int getCol(){
     return col;

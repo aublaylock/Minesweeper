@@ -115,7 +115,7 @@ class Button{
     return row;
   }
   public boolean returns4() {
-    return true;
+    return isFlagged;
   }
   public int getCol(){
     return col;

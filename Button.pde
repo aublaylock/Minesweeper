@@ -12,6 +12,10 @@ class Button{
     this.col = col;
   }
   
+  public void doesNothing() {
+    
+  }
+  
   public void show(){
     if(isCovered){
       fill(255);

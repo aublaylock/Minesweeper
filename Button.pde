@@ -111,7 +111,7 @@ class Button{
   public int returns5() {
     return 4;
   }
-  public int getRow(){
+  public int getARow(){
     return row;
   }
   public int returns4() {

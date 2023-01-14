@@ -1,13 +1,13 @@
 class Button{
   private int x,y,len,num, row, col;
-  private boolean isCovered, isBomb, isFlagged;
+  private boolean isCovered, isBomb, flagged;
   Button(int x, int y, int len, boolean isBomb, int row, int col){
     this.x = x;
     this.y = y;
     this.len = len;
     this.isBomb = isBomb;
     isCovered = true;
-    isFlagged = false;
+    flagged = false;
     this.row = row;
     this.col = col;
   }
@@ -22,7 +22,7 @@ class Button{
       triangle(x+len/2, y+len/2,  x+len/2, y-len/2,  x-len/2, y+len/2);
       fill(175);
       rect(x-len/2+6, y-len/2+6, len-12, len-12);
-      if(isFlagged){
+      if(flagged){
         image(flag, x-len/2+6, y-len/2+6, len-12, len-12);
       }
     }
@@ -70,8 +70,8 @@ class Button{
   }
   
   public void onLClick(){
-    if(isFlagged){
-      isFlagged = false;
+    if(flagged){
+      flagged = false;
     }
     else{
       if(isBomb){
@@ -88,7 +88,7 @@ class Button{
   }
   public void onRClick(){
     if(isCovered){
-      isFlagged = !isFlagged;
+      flagged = !flagged;
     }
     else if(allAdjacentBombsAreFlagged(row,col)){
       uncoverAdjacent(row,col);
@@ -112,7 +112,7 @@ class Button{
     return row;
   }
   public boolean isFlagged() {
-    return isFlagged;
+    return flagged;
   }
   public boolean returns5() {
     return isBomb;

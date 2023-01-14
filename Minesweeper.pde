@@ -35,11 +35,10 @@ void draw(){
       button.show();
       button.returns5();
       button.returns4();
-      button.isFlagged();
-      if(button.isBomb() && !button.isFlagged()){
+      if(button.isBomb() && !button.returns4()){
         allBombsAreFlagged = false;
       }
-      if(button.isFlagged() && !button.isBomb())
+      if(button.returns4() && !button.isBomb())
         allNonBombsAreNotFlagged = false;
     }
   }
@@ -94,7 +93,7 @@ public int adjacentBombs(int row, int col){
 public boolean allAdjacentBombsAreFlagged(int row, int col){
   for(int r = row-1; r<=row+1;r++){
     for(int c = col-1; c<=col+1;c++){
-      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && Buttons[r][c].isBomb() && !Buttons[r][c].isFlagged())
+      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && Buttons[r][c].isBomb() && !Buttons[r][c].returns4())
         return false;
     }
   }
@@ -112,7 +111,7 @@ public void removeBombs(int row, int col){
 public void uncoverAdjacent(int row, int col){
   for(int r = row-1; r<=row+1;r++){
     for(int c = col-1; c<=col+1;c++){
-      if(isValidOnNbyN(20, 20, r,c) && !Buttons[r][c].isFlagged()){
+      if(isValidOnNbyN(20, 20, r,c) && !Buttons[r][c].returns4()){
         if(Buttons[r][c].getNum() == 0)
           uncover0s(r, c);
         Buttons[r][c].uncover(); 

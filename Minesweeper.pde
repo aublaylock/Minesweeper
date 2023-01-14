@@ -58,7 +58,7 @@ void draw(){
   }
 }
 void mousePressed(){
-  if(!hasLost || !hasWon){
+  if(!hasLost && !hasWon){
     for(Button[] row:Buttons){
       for(Button button:row){
         if(Math.abs(mouseX - button.getX()) < 25 && Math.abs(mouseY - button.getY()) < 25){

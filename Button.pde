@@ -30,7 +30,7 @@ class Button{
       fill(175);
       rect(x-len/2, y-len/2, len, len);
       if(isABomb){
-        image(isABomb, x-len/2+6, y-len/2+6, len-12, len-12);
+        image(bomb, x-len/2+6, y-len/2+6, len-12, len-12);
       }
       else{
         if(num == 1){

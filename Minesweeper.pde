@@ -34,6 +34,7 @@ void draw(){
     for(Button button:row){
       button.show();
       button.returns5();
+      button.returns4();
       button.isFlagged();
       if(button.isBomb() && !button.isFlagged()){
         allBombsAreFlagged = false;

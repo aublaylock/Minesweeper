@@ -1,11 +1,11 @@
 class Button{
   private int x,y,len,num, row, col;
-  private boolean isCovered, isBomb, flagged;
+  private boolean isCovered, bomb, flagged;
   Button(int x, int y, int len, boolean isBomb, int row, int col){
     this.x = x;
     this.y = y;
     this.len = len;
-    this.isBomb = isBomb;
+    this.bomb = isBomb;
     isCovered = true;
     flagged = false;
     this.row = row;
@@ -29,7 +29,7 @@ class Button{
     else{
       fill(175);
       rect(x-len/2, y-len/2, len, len);
-      if(isBomb){
+      if(bomb){
         image(bomb, x-len/2+6, y-len/2+6, len-12, len-12);
       }
       else{
@@ -74,7 +74,7 @@ class Button{
       flagged = false;
     }
     else{
-      if(isBomb){
+      if(bomb){
         lost();
       }
       else{
@@ -114,8 +114,8 @@ class Button{
   public boolean isFlagged() {
     return flagged;
   }
-  public boolean returns5() {
-    return isBomb;
+  public boolean isBomb() {
+    return bomb;
   }
   public int getCol(){
     return col;
@@ -127,7 +127,7 @@ class Button{
     this.num = num;
   }
   public void setIsBomb(boolean val){
-    this.isBomb = val;
+    this.bomb = val;
   }
   public void uncover(){
     isCovered = false;

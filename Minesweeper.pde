@@ -1,4 +1,4 @@
-Button[][] testButtons;
+Button[][] Buttons;
 PImage bomb, flag;
 boolean hasLost, hasWon, allBombsAreFlagged, allNonBombsAreNotFlagged, firstClick;
 
@@ -15,13 +15,13 @@ void setup(){
   hasWon = false;
   firstClick = true;
   
-  testButtons = new Button[20][20];
+  Buttons = new Button[20][20];
   for(int row = 0; row<20; row++){
     for(int col = 0; col<20; col++){
       if(Math.random()<0.25)
-        testButtons[row][col] = new Button(col*50+25, row*50+25, 50, true, row, col);
+        Buttons[row][col] = new Button(col*50+25, row*50+25, 50, true, row, col);
       else
-        testButtons[row][col] = new Button(col*50+25, row*50+25, 50, false, row, col);
+        Buttons[row][col] = new Button(col*50+25, row*50+25, 50, false, row, col);
     }
   }
 }
@@ -30,10 +30,10 @@ void draw(){
   allBombsAreFlagged = true;
   allNonBombsAreNotFlagged = true;
   fill(255,0,0);
-  for(Button[] row:testButtons){
+  for(Button[] row:Buttons){
     for(Button button:row){
       button.show();
-      button.setNum(4);
+      button.isFlagged();
       if(button.isBomb() && !button.isFlagged()){
         allBombsAreFlagged = false;
       }
@@ -58,9 +58,9 @@ void draw(){
 }
 void mousePressed(){
   if(!hasLost || !hasWon){
-    for(Button[] row:testButtons){
+    for(Button[] row:Buttons){
       for(Button button:row){
-        if(Math.abs(mouseX-button.getX())<25 && Math.abs(mouseY-button.getY())<25){
+        if(Math.abs(mouseX - button.getX()) < 25 && Math.abs(mouseY - button.getY()) < 25){
           if(mouseButton == LEFT){
             if(firstClick){
               button.removeAdjacentBombs();
@@ -82,7 +82,7 @@ public int adjacentBombs(int row, int col){
   int count = 0;
   for(int r = row-1; r<=row+1;r++){
     for(int c = col-1; c<=col+1;c++){
-      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && testButtons[r][c].isBomb())
+      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && Buttons[r][c].isBomb())
         count++;
     }
   }
@@ -92,7 +92,7 @@ public int adjacentBombs(int row, int col){
 public boolean allAdjacentBombsAreFlagged(int row, int col){
   for(int r = row-1; r<=row+1;r++){
     for(int c = col-1; c<=col+1;c++){
-      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && testButtons[r][c].isBomb() && !testButtons[r][c].isFlagged())
+      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && Buttons[r][c].isBomb() && !Buttons[r][c].isFlagged())
         return false;
     }
   }
@@ -102,18 +102,18 @@ public boolean allAdjacentBombsAreFlagged(int row, int col){
 public void removeBombs(int row, int col){
   for(int r = row-1; r<=row+1;r++){
     for(int c = col-1; c<=col+1;c++){
-      if(isValidOnNbyN(20, 20, r,c) && testButtons[r][c].isBomb())
-        testButtons[r][c].setIsBomb(false);
+      if(isValidOnNbyN(20, 20, r,c) && Buttons[r][c].isBomb())
+        Buttons[r][c].setIsBomb(false);
     }
   }
 }
 public void uncoverAdjacent(int row, int col){
   for(int r = row-1; r<=row+1;r++){
     for(int c = col-1; c<=col+1;c++){
-      if(isValidOnNbyN(20, 20, r,c) && !testButtons[r][c].isFlagged()){
-        if(testButtons[r][c].getNum() == 0)
+      if(isValidOnNbyN(20, 20, r,c) && !Buttons[r][c].isFlagged()){
+        if(Buttons[r][c].getNum() == 0)
           uncover0s(r, c);
-        testButtons[r][c].uncover(); 
+        Buttons[r][c].uncover(); 
       }
     }
   }
@@ -122,7 +122,7 @@ public void uncoverAdjacent(int row, int col){
 public boolean hasAdjacent0(int row, int col){
   for(int r = row-1; r<=row+1;r++){
     for(int c = col-1; c<=col+1;c++){
-      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && testButtons[r][c].getNum()==0)
+      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && Buttons[r][c].getNum()==0)
         return true;
     }
   }
@@ -136,7 +136,7 @@ public boolean isValidOnNbyN(int NUM_ROWS, int NUM_COLS, int row, int col){
 public void uncover0s(int row, int col){
   if(!isValidOnNbyN(20, 20, row, col))
     return;
-  Button button = testButtons[row][col];
+  Button button = Buttons[row][col];
   if(button.getNum()==0 && button.isCovered && !button.isBomb()){
     button.uncover();
     for(int r = row-1; r<=row+1;r++){
@@ -153,14 +153,14 @@ public void uncover0s(int row, int col){
 
 public void lost(){
   hasLost = true;
-  for(Button[] row:testButtons)
+  for(Button[] row:Buttons)
     for(Button button:row)
-      if(button.isBomb)
+      if(button.isBomb())
         button.uncover();
 }
 
 public void setNums(){
   for(int row = 0; row<20; row++)
     for(int col = 0; col<20; col++)
-      testButtons[row][col].setNum(adjacentBombs(row, col));
+      Buttons[row][col].setNum(adjacentBombs(row, col));
 }

@@ -111,7 +111,7 @@ class Button{
   public int getRow(){
     return row;
   }
-  public boolean returns4() {
+  public boolean isFlagged() {
     return isFlagged;
   }
   public boolean returns5() {
@@ -119,12 +119,6 @@ class Button{
   }
   public int getCol(){
     return col;
-  }
-  public boolean isBomb(){
-    return isBomb;
-  }
-  public boolean isFlagged(){
-    return isFlagged;
   }
   public boolean isCovered(){
     return isCovered;

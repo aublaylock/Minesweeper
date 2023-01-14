@@ -111,11 +111,11 @@ class Button{
   public int returns5() {
     return 4;
   }
-  public int getARow(){
+  public int getRow(){
     return row;
   }
-  public int returns4() {
-    return 5;
+  public boolean returns4() {
+    return true;
   }
   public int getCol(){
     return col;

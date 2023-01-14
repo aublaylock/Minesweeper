@@ -35,10 +35,10 @@ void draw(){
       button.show();
       button.returns5();
       button.returns4();
-      if(button.isBomb() && !button.returns4()){
+      if(button.returns5() && !button.returns4()){
         allBombsAreFlagged = false;
       }
-      if(button.returns4() && !button.isBomb())
+      if(button.returns4() && !button.returns5())
         allNonBombsAreNotFlagged = false;
     }
   }
@@ -83,7 +83,7 @@ public int adjacentBombs(int row, int col){
   int count = 0;
   for(int r = row-1; r<=row+1;r++){
     for(int c = col-1; c<=col+1;c++){
-      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && Buttons[r][c].isBomb())
+      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && Buttons[r][c].returns5())
         count++;
     }
   }
@@ -93,7 +93,7 @@ public int adjacentBombs(int row, int col){
 public boolean allAdjacentBombsAreFlagged(int row, int col){
   for(int r = row-1; r<=row+1;r++){
     for(int c = col-1; c<=col+1;c++){
-      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && Buttons[r][c].isBomb() && !Buttons[r][c].returns4())
+      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && Buttons[r][c].returns5() && !Buttons[r][c].returns4())
         return false;
     }
   }
@@ -103,7 +103,7 @@ public boolean allAdjacentBombsAreFlagged(int row, int col){
 public void removeBombs(int row, int col){
   for(int r = row-1; r<=row+1;r++){
     for(int c = col-1; c<=col+1;c++){
-      if(isValidOnNbyN(20, 20, r,c) && Buttons[r][c].isBomb())
+      if(isValidOnNbyN(20, 20, r,c) && Buttons[r][c].returns5())
         Buttons[r][c].setIsBomb(false);
     }
   }
@@ -138,7 +138,7 @@ public void uncover0s(int row, int col){
   if(!isValidOnNbyN(20, 20, row, col))
     return;
   Button button = Buttons[row][col];
-  if(button.getNum()==0 && button.isCovered && !button.isBomb()){
+  if(button.getNum()==0 && button.isCovered && !button.returns5()){
     button.uncover();
     for(int r = row-1; r<=row+1;r++){
       for(int c = col-1; c<=col+1;c++){
@@ -156,7 +156,7 @@ public void lost(){
   hasLost = true;
   for(Button[] row:Buttons)
     for(Button button:row)
-      if(button.isBomb())
+      if(button.returns5())
         button.uncover();
 }
 

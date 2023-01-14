@@ -12,8 +12,8 @@ class Button{
     this.col = col;
   }
   
-  public void doesNothing() {
-    
+  public int returns5() {
+    return 4;
   }
   
   public void show(){

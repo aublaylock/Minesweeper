@@ -119,6 +119,15 @@ public void uncoverAdjacent(int row, int col){
     }
   }
 }
+public void blankAdjacent(int row, int col){
+  for(int r = row-1; r<=row+1;r++){
+    for(int c = col-1; c<=col+1;c++){
+      if(isValidOnNbyN(20, 20, r,c)){
+        Buttons[r][c].blank(); 
+      }
+    }
+  }
+}
 
 public boolean hasAdjacent0(int row, int col){
   for(int r = row-1; r<=row+1;r++){

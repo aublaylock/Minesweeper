@@ -1,13 +1,15 @@
 class Button{
-  private int x,y,len,num, row, col;
-  private boolean isCovered, isABomb, flagged;
+  private int x,y,len,num, row, col, blankTimer;
+  private boolean isCovered, isABomb, flagged, isBlank;
   Button(int x, int y, int len, boolean isBomb, int row, int col){
     this.x = x;
     this.y = y;
     this.len = len;
     this.isABomb = isBomb;
+    blankTimer = 0;
     isCovered = true;
     flagged = false;
+    isBlank = false;
     this.row = row;
     this.col = col;
   }
@@ -24,6 +26,15 @@ class Button{
       rect(x-len/2+6, y-len/2+6, len-12, len-12);
       if(flagged){
         image(flag, x-len/2+6, y-len/2+6, len-12, len-12);
+      }
+      else if(isBlank){
+        blankTimer++;
+        fill(175);
+        rect(x-len/2, y-len/2, len, len);
+        if(blankTimer>7){
+          isBlank=false;
+          blankTimer=0;
+        }
       }
     }
     else{
@@ -93,6 +104,9 @@ class Button{
     else if(allAdjacentBombsAreFlagged(row,col)){
       uncoverAdjacent(row,col);
     }
+    else{
+      blankAdjacent(row,col);
+    }
   }
   
   public void removeAdjacentBombs(){
@@ -131,5 +145,8 @@ class Button{
   }
   public void uncover(){
     isCovered = false;
+  }
+  public void blank(){
+    isBlank = true;
   }
 }

@@ -1,10 +1,13 @@
 Button[][] Buttons;
 PImage bomb, flag;
 boolean hasLost, hasWon, allBombsAreFlagged, allNonBombsAreNotFlagged, firstClick;
-
+int numCol;
+int numRow;
 
 void setup(){
   size(1000,1000);
+  numCol = width/50;
+  numRow = height/50;
   background(255);
   strokeWeight(1.5);
   textAlign(CENTER);
@@ -15,9 +18,9 @@ void setup(){
   hasWon = false;
   firstClick = true;
   
-  Buttons = new Button[20][20];
-  for(int row = 0; row<20; row++){
-    for(int col = 0; col<20; col++){
+  Buttons = new Button[numRow][numCol];
+  for(int row = 0; row<numRow; row++){
+    for(int col = 0; col<numCol; col++){
       if(Math.random()<0.25)
         Buttons[row][col] = new Button(col*50+25, row*50+25, 50, true, row, col);
       else
@@ -47,13 +50,13 @@ void draw(){
   if(hasLost){
     fill(255,0,0);
     textSize(100);
-    text("YOU LOSE", 500, 500);
+    text("YOU LOSE", width/2, height/2);
     textSize(40);
   }
   if(hasWon){
     fill(0,255,0);
     textSize(100);
-    text("YOU WIN", 500, 500);
+    text("YOU WIN", width/2, height/2);
     textSize(40);
   }
 }
@@ -71,8 +74,9 @@ void mousePressed(){
             }
             button.onLClick();
           }
-          if(mouseButton == RIGHT)
+          if(mouseButton == RIGHT){
             button.onRClick();
+          }
         }
       }
     }
@@ -83,7 +87,7 @@ public int adjacentBombs(int row, int col){
   int count = 0;
   for(int r = row-1; r<=row+1;r++){
     for(int c = col-1; c<=col+1;c++){
-      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && Buttons[r][c].isBomb())
+      if(!(r==row && c==col) && isValidOnNbyN(numRow, numCol, r,c) && Buttons[r][c].isBomb())
         count++;
     }
   }
@@ -93,7 +97,7 @@ public int adjacentBombs(int row, int col){
 public boolean allAdjacentBombsAreFlagged(int row, int col){
   for(int r = row-1; r<=row+1;r++){
     for(int c = col-1; c<=col+1;c++){
-      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && Buttons[r][c].isBomb() && !Buttons[r][c].isFlagged())
+      if(!(r==row && c==col) && isValidOnNbyN(numRow, numCol, r,c) && Buttons[r][c].isBomb() && !Buttons[r][c].isFlagged())
         return false;
     }
   }
@@ -103,7 +107,7 @@ public boolean allAdjacentBombsAreFlagged(int row, int col){
 public void removeBombs(int row, int col){
   for(int r = row-1; r<=row+1;r++){
     for(int c = col-1; c<=col+1;c++){
-      if(isValidOnNbyN(20, 20, r,c) && Buttons[r][c].isBomb())
+      if(isValidOnNbyN(numRow, numCol, r,c) && Buttons[r][c].isBomb())
         Buttons[r][c].setIsBomb(false);
     }
   }
@@ -111,7 +115,7 @@ public void removeBombs(int row, int col){
 public void uncoverAdjacent(int row, int col){
   for(int r = row-1; r<=row+1;r++){
     for(int c = col-1; c<=col+1;c++){
-      if(isValidOnNbyN(20, 20, r,c) && !Buttons[r][c].isFlagged()){
+      if(isValidOnNbyN(numRow, numCol, r,c) && !Buttons[r][c].isFlagged()){
         if(Buttons[r][c].getNum() == 0)
           uncover0s(r, c);
         Buttons[r][c].uncover(); 
@@ -122,7 +126,7 @@ public void uncoverAdjacent(int row, int col){
 public void blankAdjacent(int row, int col){
   for(int r = row-1; r<=row+1;r++){
     for(int c = col-1; c<=col+1;c++){
-      if(isValidOnNbyN(20, 20, r,c)){
+      if(isValidOnNbyN(numRow, numCol, r,c)){
         Buttons[r][c].blank(); 
       }
     }
@@ -132,7 +136,7 @@ public void blankAdjacent(int row, int col){
 public boolean hasAdjacent0(int row, int col){
   for(int r = row-1; r<=row+1;r++){
     for(int c = col-1; c<=col+1;c++){
-      if(!(r==row && c==col) && isValidOnNbyN(20, 20, r,c) && Buttons[r][c].getNum()==0)
+      if(!(r==row && c==col) && isValidOnNbyN(numRow, numCol, r,c) && Buttons[r][c].getNum()==0)
         return true;
     }
   }
@@ -144,7 +148,7 @@ public boolean isValidOnNbyN(int NUM_ROWS, int NUM_COLS, int row, int col){
 }
 
 public void uncover0s(int row, int col){
-  if(!isValidOnNbyN(20, 20, row, col))
+  if(!isValidOnNbyN(numRow, numCol, row, col))
     return;
   Button button = Buttons[row][col];
   if(button.getNum()==0 && button.isCovered && !button.isBomb()){
@@ -170,7 +174,7 @@ public void lost(){
 }
 
 public void setNums(){
-  for(int row = 0; row<20; row++)
-    for(int col = 0; col<20; col++)
+  for(int row = 0; row<numRow; row++)
+    for(int col = 0; col<numCol; col++)
       Buttons[row][col].setNum(adjacentBombs(row, col));
 }
